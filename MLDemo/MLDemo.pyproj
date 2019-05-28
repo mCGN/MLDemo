@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b606a490-9b9f-432b-8e0e-e89d4c88ee53</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>SoftMax.py</StartupFile>
+    <StartupFile>NewFolder1\BP.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,12 +28,17 @@
     <Compile Include="module1.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NewFolder1\BP.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SoftMax - Copy.py" />
     <Compile Include="SoftMax.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="data\" />
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\house.csv" />
