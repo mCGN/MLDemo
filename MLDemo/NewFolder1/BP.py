@@ -5,7 +5,10 @@ import math
 
 np.random.seed(0)
 X, y = sklearn.datasets.make_moons(200, noise=0.20)
+print(X)
+print(y)
 plt.scatter(X[:,0], X[:,1], s=40, c=y, cmap=plt.cm.Spectral)
+
 
 num_examples = len(X) # 训练样本的数量
 nn_input_dim = 2 # 输入层的维度
@@ -14,7 +17,6 @@ nn_output_dim = 2 # 输出层的维度
 # 梯度下降的参数（我直接手动赋值）
 epsilon = 0.01 # 梯度下降的学习率
 reg_lambda = 0.01 # 正则化的强度
-
 def calculate_loss(model):
     W1, b1, W2, b2 = model['W1'], model['b1'], model['W2'], model['b2']
     #正向传播，计算预测值
@@ -27,8 +29,8 @@ def calculate_loss(model):
     corect_logprobs = -np.log(probs[range(num_examples), y])
     data_loss = np.sum(corect_logprobs)
     #在损失上加上正则项（可选）
-    data_loss += reg_lambda/2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
-    return 1./num_examples * data_loss
+    data_loss += reg_lambda / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
+    return 1. / num_examples * data_loss
 
 
 def predict(model, x):
@@ -66,7 +68,7 @@ def build_model(nn_hdim, num_passes=20000, print_loss=False):
  
         # 反向传播
         delta3 = probs
-        delta3[range(num_examples), y] -= 1
+        delta3[range(num_examples), y] -= 1 #预期值是[0,1]
         dW2 = (a1.T).dot(delta3)
         db2 = np.sum(delta3, axis=0, keepdims=True)
         delta2 = delta3.dot(W2.T) * (1 - np.power(a1, 2))
@@ -89,23 +91,24 @@ def build_model(nn_hdim, num_passes=20000, print_loss=False):
         # 选择性地打印损失
         # 这种做法很奢侈，因为我们用的是整个数据集，所以我们不想太频繁地这样做
         if print_loss and i % 1000 == 0:
-          print("Loss after iteration %i: %f" %(i, calculate_loss(model)))
-          
+          print("Loss after iteration %i: %f" % (i, calculate_loss(model)))
+
+
     return model
 
-model = build_model(3, print_loss=True)
+model = build_model(3, print_loss = True)
 
 def plot_decision_boundary(pred_func): 
-    # Set min and max values and give it some padding 
+    # Set min and max values and give it some padding
     x_min, x_max = X[:, 0].min() - .5, X[:, 0].max() + .5 
     y_min, y_max = X[:, 1].min() - .5, X[:, 1].max() + .5 
     h = 0.01 
-    # Generate a grid of points with distance h between them 
+    # Generate a grid of points with distance h between them
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h)) 
-    # Predict the function value for the whole gid 
+    # Predict the function value for the whole gid
     Z = pred_func(np.c_[xx.ravel(), yy.ravel()]) 
     Z = Z.reshape(xx.shape) 
-    # Plot the contour and training examples 	
+    # Plot the contour and training examples
     plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral) 
     plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)
     plt.show()
