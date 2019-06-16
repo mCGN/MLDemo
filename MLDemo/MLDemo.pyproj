@@ -34,10 +34,6 @@
     <Compile Include="NewFolder1\test2.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SoftMax - Copy.py" />
-    <Compile Include="SoftMax.py">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="data\" />
