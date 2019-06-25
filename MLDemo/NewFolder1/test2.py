@@ -23,7 +23,7 @@ def sigmod(z):
 
 
 def ds(o):
-	return o*(1-o)
+	return o * (1 - o)
 
 rate = 0.01
 
@@ -32,11 +32,12 @@ for i in range(1000):
 	a2 = sigmod(W2.T.dot(a1) + b2)
 	
 	#[1,0,0] - [0.1,0.5,0.5] = 2(1-0.1)
-	l3 = 2*(y-a2)* a2*(1-a2)
+	l3 = 2 * (y - a2) * a2 * (1 - a2)
 
-	db2 = np.sum(l3,axis = 1).T-
-	#dw2 = l3 * a1 *
+	db2 = np.sum(l3,axis = 1).T
+	dw2 = a1.dot(l3.T)
 
+	l2 = W1 * l3 * a1 * (1 - a1)
 
 print(predict(x))
 
