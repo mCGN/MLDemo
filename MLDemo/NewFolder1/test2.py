@@ -5,18 +5,18 @@ import numpy as np
 
 #输入是4维的向量（4），隐藏层(2)，输出是（3）
 iris = datasets.load_iris()
-LL = iris.data
-n = len(LL)
+LL = iris.data[0:1].T
+n,m = LL.shape
 
 x = np.array(LL) #n*4
-y = np.zeros((n,3))
-for i in range(len(iris.target)):
-    y[i][iris.target[i]] = 1
+y = np.zeros((3,m))
+for i in range(m):
+    y[iris.target[i]][i] = 1
 
 W1 = np.ones((4,2))
 W2 = np.ones((2,3))
-b1 = np.ones((1,2))
-b2 = np.ones((1,3))
+b1 = np.ones((2,1))
+b2 = np.ones((3,1))
 
 def sigmod(z):
 	return 1 / (1 + np.exp(-z))
@@ -28,18 +28,15 @@ def ds(o):
 rate = 0.01
 
 for i in range(1000):
-	a2 = sigmod(x.dot(W1) + b1)
-	a3 = sigmod(a2.dot(W2) + b2)
+	a1 = sigmod(W1.T.dot(x) + b1)
+	a2 = sigmod(W2.T.dot(a1) + b2)
 	
 	#[1,0,0] - [0.1,0.5,0.5] = 2(1-0.1)
-	2*(y-a2)
+	l3 = 2*(y-a2)* a2*(1-a2)
 
+	db2 = np.sum(l3,axis = 1).T-
+	#dw2 = l3 * a1 *
 
-
-def predict(it):
-	a1 = sigmod(it.dot(W1) + b1)
-	a2 = sigmod(a1.dot(W2) + b2)
-	return a2
 
 print(predict(x))
 
