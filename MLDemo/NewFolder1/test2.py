@@ -4,49 +4,77 @@ import math
 import numpy as np
 
 #输入是4维的向量（4），隐藏层(2)，输出是（3）
-iris = datasets.load_iris()
-LL = iris.data[0:1].T
-n,m = LL.shape
-
-x = np.array(LL) #n*4
-y = np.zeros((3,m))
-for i in range(m):
-    y[iris.target[i]][i] = 1
-
-W1 = np.ones((4,2))
-W2 = np.ones((2,3))
-b1 = np.ones((2,1))
-b2 = np.ones((3,1))
-
 def sigmod(z):
 	return 1 / (1 + np.exp(-z))
 
+def dsigmod(a):
+	return a * (1 - a)
 
-def ds(o):
-	return o * (1 - o)
+def softmax(z):
+	e = np.exp(z)
+	return e / np.sum(e)
 
-rate = 0.01
+class BP(object):
+	def __init__(self):
+		iris = datasets.load_iris()
+		self.LL = iris.data
+		self.m,self.n = self.LL.shape
+		self.x = np.array(self.LL)
+		self.y = np.zeros((self.m,3))
+		for i in range(self.m):
+			self.y[i][iris.target[i]] = 1
 
-for i in range(1000):
-	a1 = sigmod(W1.T.dot(x) + b1)
-	a2 = sigmod(W2.T.dot(a1) + b2)
+		self.w1 = np.zeros((4,3))
+		self.w2 = np.zeros((3,3))
+		self.b1 = np.zeros((1,3))
+		self.b2 = np.zeros((1,3))
+
+		self.rate = 0.002
 	
-	#[1,0,0] - [0.1,0.5,0.5] = 2(1-0.1)
-	l3 = 2 * (y - a2) * a2 * (1 - a2)
 
-	db2 = np.sum(l3,axis = 1).T
-	dw2 = a1.dot(l3.T)
+	def backPropagation(self,sample,y,p=1):
+		m,n = sample.shape
+		a1 = sigmod(sample.dot(self.w1) + self.b1)
+		a2 = sigmod(a1.dot(self.w2) + self.b2)
 
-	l2 = W1 * l3 * a1 * (1 - a1)
+		l2 = -(y - a2) * dsigmod(a2)
+		l1 = l2.dot(self.w2.T) * dsigmod(a1)
 
-print(predict(x))
+		dw2 = a1.T.dot(l2)
+		db2 = np.sum(l2,axis=0)
 
+		dw1 = sample.T.dot(l1)
+		db1 = np.sum(l1,axis=0)
 
-def propagation():
-	pass
+		self.w2 -= self.rate * dw2
+		self.w1 -= self.rate * dw1
+		self.b2 -= self.rate * db2
+		self.b1 -= self.rate * db1
 
-def backPropagation():
+		if p==0:
+			print (np.sum(1/m*(y-a2)**2))
 
-	pass
+	def predict(self,input):
+		a1 = sigmod(input.dot(self.w1) + self.b1)
+		a2 = sigmod(a1.dot(self.w2) + self.b2)
+		return a2
+
+bp = BP()
+
+for i in range(1500):
+	for k in range(bp.m):
+		bp.backPropagation(bp.x[k].reshape(1,bp.n),bp.y[k].reshape(1,3),k)
+
+print(bp.w1)
+print(bp.b1)
+print(bp.w2)
+print(bp.b2)
+
+print(bp.predict(bp.x[1]))
+print(bp.y[1])
+print(bp.predict(bp.x[60]))
+print(bp.y[60])
+print(bp.predict(bp.x[120]))
+print(bp.y[120])
 
 

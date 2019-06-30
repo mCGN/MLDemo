@@ -13,3 +13,4 @@ k = sigmod(a).T.dot(1-sigmod(a))
 print(j)
 print(k)
 
+print([0.0]*a)
